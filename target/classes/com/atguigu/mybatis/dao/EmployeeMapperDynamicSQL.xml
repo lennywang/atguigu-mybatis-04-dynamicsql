@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mybatis.dao.EmployeeMapperDynamicSQL">
+    <sql id="selector">
+        SELECT *
+        FROM tbl_employee
+    </sql>
+    <!-- public List<Employee> getEmployeeByConditionIf(Employee employee);-->
+    <select id="getEmployeeByConditionIf" parameterType="Employee" resultType="Employee">
+        <include refid="selector"/>
+        <where>
+            <if test="id!=null">
+                id=#{id}
+            </if>
+            <if test="lastName!=null &amp;&amp; lastName!=&quot;&quot; ">
+                and last_name like #{lastName}
+            </if>
+            <if test="email!=null and email.trim()!=&quot;&quot;">
+                and email=#{email}
+            </if>
+            <if test="gender==0 or gender==1">
+                and gender=#{gender}
+            </if>
+        </where>
+    </select>
+    <!-- public List<Employee> getEmployeeByConditionTrim(Employee employee);-->
+    <select id="getEmployeeByConditionTrim" resultType="Employee">
+        <include refid="selector"/>
+        <trim prefix="where" suffixOverrides="and">
+            <if test="id!=null">
+                id=#{id} and
+            </if>
+            <if test="lastName!=null &amp;&amp; lastName!=&quot;&quot; ">
+                last_name like #{lastName} and
+            </if>
+            <if test="email!=null and email.trim()!=&quot;&quot;">
+                email=#{email} and
+            </if>
+            <if test="gender==0 or gender==1">
+                gender=#{gender} and
+            </if>
+        </trim>
+    </select>
+
+    <!-- public List<Employee> getEmployeeByConditionChoose(Employee employee);-->
+    <select id="getEmployeeByConditionChoose" resultType="Employee">
+        <include refid="selector"/>
+        <where>
+            <choose>
+                <when test="id!=null">
+                    id=#{id}
+                </when>
+                <when test="lastName!=null">
+                    last_name like #{lastName}
+                </when>
+                <when test="email!=null">
+                    email=#{email}
+                </when>
+                <otherwise>
+                    gender=0
+                </otherwise>
+            </choose>
+        </where>
+
+    </select>
+    <!--public void updateEmployee(Employee employee);-->
+    <update id="updateEmployee">
+        UPDATE tbl_employee
+        <set>
+            <if test="lastName!=null">
+                last_name=#{lastName},
+            </if>
+            <if test="email!=null">
+                email=#{email},
+            </if>
+            <if test="gender!=null">
+                gender=#{gender}
+            </if>
+        </set>
+        WHERE id=#{id}
+    </update>
+    <!--public List<Employee> getEmployeeByConditionForeach(List<Integer> ids);-->
+    <select id="getEmployeeByConditionForeach" resultType="Employee">
+        <include refid="selector"/>
+        <foreach collection="ids" item="id" separator="," open="where id in(" close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

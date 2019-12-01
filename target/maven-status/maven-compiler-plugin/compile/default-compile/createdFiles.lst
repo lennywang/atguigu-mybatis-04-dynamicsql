@@ -1,0 +1,4 @@
+com\atguigu\mybatis\bean\Employee.class
+com\atguigu\mybatis\bean\Department.class
+com\atguigu\mybatis\dao\DepartmentMapper.class
+com\atguigu\mybatis\dao\EmployeeMapperDynamicSQL.class
